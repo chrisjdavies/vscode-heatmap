@@ -1,0 +1,78 @@
+{
+  "name": "heatmap",
+  "displayName": "Heatmap",
+  "description": "Toggle a heatmap to show which lines are most recent.",
+  "version": "0.0.1",
+  "license": "MIT",
+  "homepage": "https://github.com/chrisjdavies/vscode-heatmap",
+  "publisher": "chrisjdavies",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chrisjdavies/vscode-heatmap.git"
+  },
+  "bugs": {
+    "url": "https://github.com/chrisjdavies/vscode-heatmap/issues"
+  },
+  "icon": "images/icon.png",
+  "engines": {
+    "vscode": "^1.83.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "heat",
+    "map",
+    "git",
+    "heatmap"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "heatmap.enable",
+        "title": "Heatmap: On"
+      },
+      {
+        "command": "heatmap.disable",
+        "title": "Heatmap: Off"
+      }
+    ],
+    "configuration": {
+      "title": "Heatmap",
+      "properties": {
+        "heatmap.heatLevels": {
+          "type": "integer",
+          "default": 10,
+          "description": "The number of heat levels to use."
+        },
+        "heatmap.heatColour": {
+          "type": "string",
+          "default": "200,0,0",
+          "description": "The heat colour to use as R,G,B between 0-255 for each."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.83.0",
+    "@types/mocha": "^10.0.2",
+    "@types/node": "18.x",
+    "@typescript-eslint/eslint-plugin": "^6.7.3",
+    "@typescript-eslint/parser": "^6.7.3",
+    "eslint": "^8.50.0",
+    "glob": "^10.3.3",
+    "mocha": "^10.2.0",
+    "typescript": "^5.2.2",
+    "@vscode/test-electron": "^2.3.4"
+  }
+}
