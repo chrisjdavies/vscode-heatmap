@@ -16,6 +16,17 @@ source:
 
 ![Screenshot](images/screenshot.png)
 
+## Why?
+
+I'm sure different people have different reasons for wanting a tool like this,
+but for me, when I'm auditing code for vulnerabilities it helps to quickly
+glance at where code has been more recently added compared to the lines around
+it.
+
+New additions are often more susceptible to contextual mistakes than the original
+code, so this helps uncover the story of how a code-base has been added to and
+amended over time.
+
 ## Commands
 
 Heatmap adds the following commands to the command palette:
