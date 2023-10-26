@@ -9,23 +9,15 @@ recent.
 
 Requires `git` in your `$PATH`.
 
+Originally created to help understand how code has changed over time while
+auditing for security issues.
+
 ## Example
 
 Here's a screenshot showing the relative age of some lines in the FreeBSD kernel
 source:
 
 ![Screenshot](images/screenshot.png)
-
-## Why?
-
-I'm sure different people have different reasons for wanting a tool like this,
-but for me, when I'm auditing code for vulnerabilities it helps to quickly
-glance at where code has been more recently added compared to the lines around
-it.
-
-New additions are often more susceptible to contextual mistakes than the original
-code, so this helps uncover the story of how a code-base has been added to and
-amended over time.
 
 ## Commands
 
