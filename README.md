@@ -7,6 +7,8 @@ control.  By toggling the heatmap on, the background colour of every line in the
 file is altered to reflect the relative age; the brightest lines are the most
 recent.
 
+Requires `git` in your `$PATH`.
+
 ## Example
 
 Here's a screenshot showing the relative age of some lines in the FreeBSD kernel
