@@ -12,6 +12,11 @@ Requires `git` in your `$PATH`.
 Originally created to help understand how code has changed over time while
 auditing for security issues.
 
+## Installation
+
+Install through the Visual Studio Code Marketplace:
+https://marketplace.visualstudio.com/items?itemName=chrisjdavies.heatmap
+
 ## Example
 
 Here's a screenshot showing the relative age of some lines in the FreeBSD kernel
