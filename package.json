@@ -37,6 +37,10 @@
       {
         "command": "heatmap.disable",
         "title": "Heatmap: Off"
+      },
+      {
+        "command": "heatmap.toggle",
+        "title": "Heatmap: Toggle"
       }
     ],
     "configuration": {

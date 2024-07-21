@@ -59,7 +59,7 @@ function updateHeatmap(){
 	// clear whatever was already there
 	heatStyles.forEach(style => editor.setDecorations(style, []));
 
-	// decide whether heatmap should be displayed
+	// decide whether heatmap needs to be redrawn
 	if (!enabledForFiles.has(editor.document.uri)){
 		return;
 	}
@@ -107,7 +107,7 @@ function updateHeatmap(){
 	}
 }
 
-function toggleHeatMap(enable: boolean) {
+function setHeatmapEnabled(enable: boolean) {
 	const editor = vscode.window.activeTextEditor;
 	if (!editor) {
 		return;
@@ -118,6 +118,21 @@ function toggleHeatMap(enable: boolean) {
 	}
 	else{
 		enabledForFiles.delete(editor.document.uri);
+	}
+
+	updateHeatmap();
+}
+
+function toggleHeatmap(){
+	const editor = vscode.window.activeTextEditor;
+	if (!editor) {
+		return;
+	}
+
+	if (enabledForFiles.has(editor.document.uri)){
+		enabledForFiles.delete(editor.document.uri);
+	}else{
+		enabledForFiles.add(editor.document.uri);
 	}
 
 	updateHeatmap();
@@ -142,8 +157,9 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	let commands = [
-		vscode.commands.registerCommand('heatmap.enable', () => { toggleHeatMap(true); }),
-		vscode.commands.registerCommand('heatmap.disable', () => { toggleHeatMap(false); })
+		vscode.commands.registerCommand('heatmap.enable', () => { setHeatmapEnabled(true); }),
+		vscode.commands.registerCommand('heatmap.disable', () => { setHeatmapEnabled(false); }),
+		vscode.commands.registerCommand('heatmap.toggle', () => { toggleHeatmap(); })
 	];
 
 	commands.forEach(cmd => context.subscriptions.push(cmd));
