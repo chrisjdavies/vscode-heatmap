@@ -7,6 +7,9 @@ const DEFAULT_HEAT_LEVELS = 10;
 
 const heatStyles: vscode.TextEditorDecorationType[] = [];
 
+var enabledForFiles = new Set();
+
+
 function getGitTimestampsForLines(document: vscode.TextDocument): undefined | number[] {
 	const filePath = document.uri.fsPath;
 	const fileDir = path.dirname(filePath);
@@ -47,15 +50,17 @@ function getGitTimestampsForLines(document: vscode.TextDocument): undefined | nu
 	return timestamps;
 }
 
-function toggleHeatMap(enable: boolean) {
+function updateHeatmap(){
 	const editor = vscode.window.activeTextEditor;
 	if (!editor) {
 		return;
 	}
 
+	// clear whatever was already there
 	heatStyles.forEach(style => editor.setDecorations(style, []));
 
-	if (!enable) {
+	// decide whether heatmap should be displayed
+	if (!enabledForFiles.has(editor.document.uri)){
 		return;
 	}
 
@@ -102,6 +107,22 @@ function toggleHeatMap(enable: boolean) {
 	}
 }
 
+function toggleHeatMap(enable: boolean) {
+	const editor = vscode.window.activeTextEditor;
+	if (!editor) {
+		return;
+	}
+
+	if (enable){
+		enabledForFiles.add(editor.document.uri);
+	}
+	else{
+		enabledForFiles.delete(editor.document.uri);
+	}
+
+	updateHeatmap();
+}
+
 export function activate(context: vscode.ExtensionContext) {
 	const config = vscode.workspace.getConfiguration('heatmap');
 	const heatLevels = config.get<number>('heatLevels') || DEFAULT_HEAT_LEVELS;
@@ -126,6 +147,10 @@ export function activate(context: vscode.ExtensionContext) {
 	];
 
 	commands.forEach(cmd => context.subscriptions.push(cmd));
+
+	vscode.window.onDidChangeActiveTextEditor(_ => {
+        updateHeatmap();
+    }, null, context.subscriptions)
 }
 
 export function deactivate() {}
