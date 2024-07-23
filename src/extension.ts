@@ -160,6 +160,7 @@ function buildDecorations(){
 	heatStyles.length = 0;
 	for (let i = 0; i < heatLevels; ++i) {
 		heatStyles.push(vscode.window.createTextEditorDecorationType({
+			rangeBehavior: vscode.DecorationRangeBehavior.ClosedClosed,
 			backgroundColor: 'rgba(' + heatColour + ', ' + (heatPerLevel * i) + ')',
 		}));
 	}
