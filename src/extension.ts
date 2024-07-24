@@ -50,12 +50,13 @@ function getGitTimestampsForLines(document: vscode.TextDocument): undefined | nu
 	return timestamps;
 }
 
-function updateHeatmap(){
-	const editor = vscode.window.activeTextEditor;
-	if (!editor) {
-		return;
-	}
+function updateVisibleHeatmaps(){
+	vscode.window.visibleTextEditors.forEach(editor => {
+		updateHeatmapForEditor(editor);
+	});
+}
 
+function updateHeatmapForEditor(editor:vscode.TextEditor){
 	// clear whatever was already there
 	heatStyles.forEach(style => editor.setDecorations(style, []));
 
@@ -120,7 +121,7 @@ function setHeatmapEnabled(enable: boolean) {
 		enabledForFiles.delete(editor.document.uri);
 	}
 
-	updateHeatmap();
+	updateVisibleHeatmaps();
 }
 
 function toggleHeatmap(){
@@ -135,7 +136,7 @@ function toggleHeatmap(){
 		enabledForFiles.add(editor.document.uri);
 	}
 
-	updateHeatmap();
+	updateVisibleHeatmaps();
 }
 
 export function activate(context: vscode.ExtensionContext) {
@@ -164,8 +165,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 	commands.forEach(cmd => context.subscriptions.push(cmd));
 
-	vscode.window.onDidChangeActiveTextEditor(_ => {
-        updateHeatmap();
+	vscode.window.onDidChangeVisibleTextEditors(_ => {
+        updateVisibleHeatmaps();
     }, null, context.subscriptions)
 }
 
