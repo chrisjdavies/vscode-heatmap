@@ -139,7 +139,7 @@ function toggleHeatmap(){
 	updateVisibleHeatmaps();
 }
 
-export function activate(context: vscode.ExtensionContext) {
+function buildDecorations(){
 	const config = vscode.workspace.getConfiguration('heatmap');
 	const heatLevels = config.get<number>('heatLevels') || DEFAULT_HEAT_LEVELS;
 	const heatColour = config.get<string>('heatColour') || DEFAULT_HEAT_COLOUR;
@@ -149,13 +149,31 @@ export function activate(context: vscode.ExtensionContext) {
 		return;
 	}
 
+	// remove all decorations from all visible editors so we can rebuild the
+	// decorator list from scratch
+	vscode.window.visibleTextEditors.forEach(editor => {
+		heatStyles.forEach(style => editor.setDecorations(style, []));
+	});
+
 	let heatPerLevel = heatLevels > 1 ? (1.0 / (heatLevels - 1)) : 0;
 
+	heatStyles.length = 0;
 	for (let i = 0; i < heatLevels; ++i) {
 		heatStyles.push(vscode.window.createTextEditorDecorationType({
 			backgroundColor: 'rgba(' + heatColour + ', ' + (heatPerLevel * i) + ')',
 		}));
 	}
+}
+
+export function activate(context: vscode.ExtensionContext) {
+	buildDecorations();
+
+	vscode.workspace.onDidChangeConfiguration(ev => {
+		if(ev.affectsConfiguration("heatmap")){
+			buildDecorations();
+			updateVisibleHeatmaps();
+		}
+	})
 
 	let commands = [
 		vscode.commands.registerCommand('heatmap.enable', () => { setHeatmapEnabled(true); }),
