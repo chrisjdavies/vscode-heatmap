@@ -1,14 +1,48 @@
 import { execSync } from 'child_process';
 import path = require('path');
+import color = require('color');
 import * as vscode from 'vscode';
 
-const DEFAULT_HEAT_COLOUR = '200,0,0';
+
+const DEFAULT_HEAT_COLOUR = color.rgb(200, 0,0 );
 const DEFAULT_HEAT_LEVELS = 10;
 
-const heatStyles: vscode.TextEditorDecorationType[] = [];
+const RGB_STRING_REGEXP = /^(?<r>\d{1,3}),(?<g>\d{1,3}),(?<b>\d{1,3})$/;
+const HEX_STRING_REGEXP = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
 
+const heatStyles: vscode.TextEditorDecorationType[] = [];
 var enabledForFiles = new Set();
 
+
+/**
+ * Parse a string into a color object.
+ * 
+ * @param colorStr The string to parse. Must be in one of the formats:
+ *                  * "r,g,b", where r, g, b are the color components as decimal
+ * 						numbers. e.g. "200,0,0"
+ * 					* "#RRGGBB", where RR, GG, BB are the color components in
+ * 						hexadecimal. e.g. "#ff0000"
+ * 					* "#RGB", where R, G, B are the color components in
+ * 						hexadecimal. e.g. "#f00"
+ * @param default_ The color object to return if the string couldn't be converted.
+ * @returns A color object.
+ */
+function colorFromString(colorStr:string, default_:color): color
+{
+	colorStr = colorStr.replace(/\s/g,''); // remove all (including inner) whitespace
+
+	let rgb = RGB_STRING_REGEXP.exec(colorStr);
+	if(rgb && rgb.groups){
+		return color(rgb.groups);
+	}
+
+	let hex = HEX_STRING_REGEXP.exec(colorStr);
+	if (hex){
+		return color(colorStr);
+	}
+
+	return default_;
+}
 
 function getGitTimestampsForLines(document: vscode.TextDocument): undefined | number[] {
 	const filePath = document.uri.fsPath;
@@ -142,7 +176,7 @@ function toggleHeatmap(){
 function buildDecorations(){
 	const config = vscode.workspace.getConfiguration('heatmap');
 	const heatLevels = config.get<number>('heatLevels') || DEFAULT_HEAT_LEVELS;
-	const heatColour = config.get<string>('heatColour') || DEFAULT_HEAT_COLOUR;
+	const heatColor = colorFromString(config.get<string>('heatColour', ""), DEFAULT_HEAT_COLOUR);
 	const showInRuler = config.get<boolean>('showInRuler');
 
 	if (heatLevels < 1) {
@@ -160,7 +194,7 @@ function buildDecorations(){
 
 	heatStyles.length = 0;
 	for (let i = 0; i < heatLevels; ++i) {
-		const colorString = 'rgba(' + heatColour + ', ' + (heatPerLevel * i) + ')';
+		const colorString = heatColor.alpha(heatPerLevel * i).hexa();
 		heatStyles.push(vscode.window.createTextEditorDecorationType({
 			rangeBehavior: vscode.DecorationRangeBehavior.ClosedClosed,
 			backgroundColor: colorString,
