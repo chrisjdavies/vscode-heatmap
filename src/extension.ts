@@ -179,6 +179,9 @@ function buildDecorations(){
 	const heatColor = colorFromString(config.get<string>('heatColour', ""), DEFAULT_HEAT_COLOUR);
 	const showInRuler = config.get<boolean>('showInRuler');
 
+	const defaultCoolColor = heatColor.alpha(0);
+	const coolColor = colorFromString(config.get<string>('coolColour', ""), defaultCoolColor);
+
 	if (heatLevels < 1) {
 		vscode.window.showErrorMessage('Heatmap: Invalid number of heat levels (must be >1).');
 		return;
@@ -194,7 +197,8 @@ function buildDecorations(){
 
 	heatStyles.length = 0;
 	for (let i = 0; i < heatLevels; ++i) {
-		const colorString = heatColor.alpha(heatPerLevel * i).hexa();
+		const colorString = coolColor.mix(heatColor, heatPerLevel * i).hexa();
+
 		heatStyles.push(vscode.window.createTextEditorDecorationType({
 			rangeBehavior: vscode.DecorationRangeBehavior.ClosedClosed,
 			backgroundColor: colorString,

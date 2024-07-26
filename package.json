@@ -56,6 +56,11 @@
           "default": "200,0,0",
           "description": "The heat colour to use as R,G,B between 0-255 for each, or hex colour code."
         },
+        "heatmap.coolColour": {
+          "type": "string",
+          "default": "",
+          "description": "The cool colour to use as R,G,B between 0-255 for each, or hex colour code."
+        },
         "heatmap.showInRuler": {
           "type": "boolean",
           "default": true,
