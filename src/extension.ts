@@ -50,12 +50,13 @@ function getGitTimestampsForLines(document: vscode.TextDocument): undefined | nu
 	return timestamps;
 }
 
-function updateHeatmap(){
-	const editor = vscode.window.activeTextEditor;
-	if (!editor) {
-		return;
-	}
+function updateVisibleHeatmaps(){
+	vscode.window.visibleTextEditors.forEach(editor => {
+		updateHeatmapForEditor(editor);
+	});
+}
 
+function updateHeatmapForEditor(editor:vscode.TextEditor){
 	// clear whatever was already there
 	heatStyles.forEach(style => editor.setDecorations(style, []));
 
@@ -120,7 +121,7 @@ function setHeatmapEnabled(enable: boolean) {
 		enabledForFiles.delete(editor.document.uri);
 	}
 
-	updateHeatmap();
+	updateVisibleHeatmaps();
 }
 
 function toggleHeatmap(){
@@ -135,26 +136,48 @@ function toggleHeatmap(){
 		enabledForFiles.add(editor.document.uri);
 	}
 
-	updateHeatmap();
+	updateVisibleHeatmaps();
 }
 
-export function activate(context: vscode.ExtensionContext) {
+function buildDecorations(){
 	const config = vscode.workspace.getConfiguration('heatmap');
 	const heatLevels = config.get<number>('heatLevels') || DEFAULT_HEAT_LEVELS;
 	const heatColour = config.get<string>('heatColour') || DEFAULT_HEAT_COLOUR;
+	const showInRuler = config.get<boolean>('showInRuler');
 
 	if (heatLevels < 1) {
 		vscode.window.showErrorMessage('Heatmap: Invalid number of heat levels (must be >1).');
 		return;
 	}
 
+	// remove all decorations from all visible editors so we can rebuild the
+	// decorator list from scratch
+	vscode.window.visibleTextEditors.forEach(editor => {
+		heatStyles.forEach(style => editor.setDecorations(style, []));
+	});
+
 	let heatPerLevel = heatLevels > 1 ? (1.0 / (heatLevels - 1)) : 0;
 
+	heatStyles.length = 0;
 	for (let i = 0; i < heatLevels; ++i) {
+		const colorString = 'rgba(' + heatColour + ', ' + (heatPerLevel * i) + ')';
 		heatStyles.push(vscode.window.createTextEditorDecorationType({
-			backgroundColor: 'rgba(' + heatColour + ', ' + (heatPerLevel * i) + ')',
+			rangeBehavior: vscode.DecorationRangeBehavior.ClosedClosed,
+			backgroundColor: colorString,
+			overviewRulerColor: showInRuler ? colorString : undefined,
 		}));
 	}
+}
+
+export function activate(context: vscode.ExtensionContext) {
+	buildDecorations();
+
+	vscode.workspace.onDidChangeConfiguration(ev => {
+		if(ev.affectsConfiguration("heatmap")){
+			buildDecorations();
+			updateVisibleHeatmaps();
+		}
+	})
 
 	let commands = [
 		vscode.commands.registerCommand('heatmap.enable', () => { setHeatmapEnabled(true); }),
@@ -164,8 +187,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 	commands.forEach(cmd => context.subscriptions.push(cmd));
 
-	vscode.window.onDidChangeActiveTextEditor(_ => {
-        updateHeatmap();
+	vscode.window.onDidChangeVisibleTextEditors(_ => {
+        updateVisibleHeatmaps();
     }, null, context.subscriptions)
 }
 

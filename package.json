@@ -55,6 +55,11 @@
           "type": "string",
           "default": "200,0,0",
           "description": "The heat colour to use as R,G,B between 0-255 for each."
+        },
+        "heatmap.showInRuler": {
+          "type": "boolean",
+          "default": true,
+          "description": "When the heatmap is switched on, also show it in the overview ruler."
         }
       }
     }
