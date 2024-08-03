@@ -36,7 +36,8 @@ Heatmap adds the following commands to the command palette:
 |Property|Description|Type|Default value|
 |---|---|---|---|
 |`heatmap.heatLevels`|The number of different heat levels to visualise.|Integer|10|
-|`heatmap.heatColour`|The R,G,B of the brightest heat level.|String|`200,0,0`|
+|`heatmap.heatColour`|The colour of the "hottest" heat level (most recent changes), as a list of numbers R, G, B, or a hex colour code.|String|`200,0,0` or `#C80000`|
+|`heatmap.coolColour`|The colour of the "coolest" heat level (oldest changes), as a list of numbers R, G, B, or a hex colour code.|String|Same as heatColour, but with 100% alpha|
 |`heatmap.showInRuler`|Whether to show the heatmap in the overview ruler.|Boolean|true|
 
 ## Thanks

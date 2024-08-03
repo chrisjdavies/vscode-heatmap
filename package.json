@@ -54,7 +54,12 @@
         "heatmap.heatColour": {
           "type": "string",
           "default": "200,0,0",
-          "description": "The heat colour to use as R,G,B between 0-255 for each."
+          "description": "The heat colour to use as R,G,B between 0-255 for each, or hex colour code."
+        },
+        "heatmap.coolColour": {
+          "type": "string",
+          "default": "",
+          "description": "The cool colour to use as R,G,B between 0-255 for each, or hex colour code."
         },
         "heatmap.showInRuler": {
           "type": "boolean",
@@ -73,15 +78,19 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.83.0",
+    "@types/color": "^3.0.6",
     "@types/mocha": "^10.0.2",
     "@types/node": "18.x",
+    "@types/vscode": "^1.83.0",
     "@typescript-eslint/eslint-plugin": "^6.7.3",
     "@typescript-eslint/parser": "^6.7.3",
+    "@vscode/test-electron": "^2.3.4",
     "eslint": "^8.50.0",
     "glob": "^10.3.3",
     "mocha": "^10.2.0",
-    "typescript": "^5.2.2",
-    "@vscode/test-electron": "^2.3.4"
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "color": "^4.2.3"
   }
 }
