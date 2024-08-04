@@ -2,7 +2,7 @@
   "name": "heatmap",
   "displayName": "Heatmap",
   "description": "Toggle a heatmap to show which lines are most recent.",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "license": "MIT",
   "homepage": "https://github.com/chrisjdavies/vscode-heatmap",
   "publisher": "chrisjdavies",

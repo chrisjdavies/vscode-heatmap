@@ -43,3 +43,4 @@ Heatmap adds the following commands to the command palette:
 ## Thanks
 
 - Thanks to DALL-E 3 for generating the icon/logo.
+- Thanks to @nhale25 (Nick) for contributions and improvements.
